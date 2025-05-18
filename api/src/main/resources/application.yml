@@ -1,0 +1,33 @@
+quarkus:
+  log:
+    level: INFO
+    category:
+      'org.jboss.resteasy.reactive.client.logging':
+        level: DEBUG
+    console:
+      format: '%d{yyyy-MM-dd HH:mm:ss.SSS} %-5p [%c{3.}:%L] [%X{REQUEST.ID}] %s%e%n'
+  devservices:
+    enabled: true
+  datasource:
+    db-kind: postgresql
+    devservices:
+      port: 5433
+      db-name: postgres
+      username: quarkus
+      password: quarkus
+  liquibase:
+    enabled: true
+    migrate-at-start: true
+    change-log: db/root.yaml
+  hibernate-orm:
+    packages:
+      - 'personal.my.dao'
+    log:
+      sql: true
+    database:
+      generation: validate
+  http:
+    access-log:
+      enabled: true
+    limits:
+      max-body-size: 100M
