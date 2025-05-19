@@ -3,7 +3,7 @@ plugins {
 }
 
 group = "personal.my"
-version = "unspecified"
+version = "1.0-SNAPSHOT"
 
 repositories {
     mavenCentral()

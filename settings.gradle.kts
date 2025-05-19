@@ -3,5 +3,12 @@ plugins {
 }
 rootProject.name = "clean-architecture-implementation"
 include("api")
-include("dao")
+include("jpa")
 include("use-case")
+include("core")
+include("core:domain")
+findProject(":core:domain")?.name = "domain"
+include("core:use-case")
+findProject(":core:use-case")?.name = "use-case"
+include("core:port-in")
+findProject(":core:port-in")?.name = "port-in"

@@ -8,7 +8,7 @@ import java.util.UUID
 
 @Entity
 @Table(name = "users")
-class User(
+class UserDAO(
     @Id
     var id: UUID,
 

@@ -16,38 +16,41 @@ graph LR
 		web[Web]
 	end
 	
-	subgraph adapter[Adapter]
-		subgraph adapter-in[In]
-			adapter-in-gateway[Gateway]
-			adapter-in-config[Config]
-		end
-		subgraph adapter-out[Out]
-			adapter-out-service-impl[ServiceImpl]
-			adapter-out-repo-impl[RepositoryImpl]
-			adapter-out-client[Client]
-			adapter-out-jpa-repostory[JpaRepostory]
-		end
-	end
+	subgraph api[API]
+        subgraph adapter[Adapter]
+            subgraph adapter-in[In]
+                adapter-in-gateway[Gateway]
+            end
+            subgraph adapter-out[Out]
+                adapter-out-service-impl[ServiceImpl]
+                adapter-out-repo-impl[RepositoryImpl]
+                adapter-out-client[Client]
+                adapter-out-jpa-repostory[JpaRepostory]
+            end
+        end
+    end
 	
 	subgraph core[Core]
-		subgraph domain[Domain]
+		subgraph domain-layer[Domain Layer]
 			Entity
 		end
-		subgraph use-case[Use Case]
-		end
-		subgraph core-port-out[Port Out（Interface）]
-			core-port-out-service[Service]
+		subgraph use-case-layer[Use Case Layer]
+            subgraph port-out[Port Out（Interface）]
+                port-out-service[Service]
+            end
+            subgraph use-case[Use Case]
+            end
 		end
 	end
 	
-	web -- Request --> adapter-in
+	web -- Request --> adapter-in-gateway
 	
 	adapter-in -- Use --> use-case
-	use-case -- Use --> domain
+	use-case -- Use --> domain-layer
 	adapter-out-client -. Inject .-> adapter-out-service-impl
 	adapter-out-jpa-repostory -. Inject .-> adapter-out-repo-impl
-	adapter-out -. Implement .-> core-port-out
-	core-port-out -. Inject .-> use-case
+	adapter-out -. Implement .-> port-out
+	port-out -. Inject .-> use-case
 	
 	adapter-out-repo-impl -- Save or Get --> data-store
 	adapter-out-service-impl -- Request --> resource

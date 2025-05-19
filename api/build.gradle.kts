@@ -16,8 +16,8 @@ dependencies {
     testImplementation(kotlin("test"))
 
     implementation(enforcedPlatform("io.quarkus:quarkus-bom:3.6.9"))
-    implementation(project(":dao"))
-    implementation(project(":use-case"))
+    implementation(project(":jpa"))
+    implementation(project(":core:use-case"))
 
     implementation("io.quarkus:quarkus-resteasy-reactive")
     implementation("io.quarkus:quarkus-resteasy-reactive-jackson")

@@ -14,6 +14,7 @@ import org.eclipse.microprofile.openapi.annotations.responses.APIResponse
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponses
 import personal.my.adapter.ResponseBean
 import personal.my.use_case.UserUseCase
+import personal.my.use_case.port.`in`.pdo.UserPDO
 import personal.my.use_case.port.out.repository.UserRepository.*
 import java.util.*
 
@@ -58,10 +59,9 @@ import java.util.*
 class UserResource(
     private val userUseCase: UserUseCase
 ) {
-
     @GET
     @Path("/{userId}")
-    @Operation(summary = "取得指定 user")
+    @Operation(summary = "Get user")
     @APIResponses(
         APIResponse(
             responseCode = "200",
@@ -82,8 +82,7 @@ class UserResource(
     fun getUser(
         @PathParam("userId") userId: String,
     ): Response {
-
-        lateinit var user: FindByIdResponse
+        lateinit var user: UserPDO
 
         try {
             user = userUseCase.getUser(id = UUID.fromString(userId))

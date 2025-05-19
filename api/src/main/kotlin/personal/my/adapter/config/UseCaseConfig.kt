@@ -1,4 +1,4 @@
-package personal.my.adapter.`in`.config
+package personal.my.adapter.config
 
 import jakarta.enterprise.context.ApplicationScoped
 import jakarta.enterprise.inject.Produces
@@ -6,12 +6,9 @@ import personal.my.use_case.UserUseCase
 import personal.my.use_case.port.out.repository.UserRepository
 
 @ApplicationScoped
-class UserConfig(
-    private val userRepository: UserRepository
-) {
-
+class UseCaseConfig {
     @Produces
-    fun createUserUseCase(): UserUseCase {
+    fun userUseCase(userRepository: UserRepository): UserUseCase {
         return UserUseCase(userRepository)
     }
 }
