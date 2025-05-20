@@ -1,8 +1,8 @@
 plugins {
-    kotlin("jvm") version "2.1.10"
+    kotlin("jvm") version "2.0.21"
     kotlin("plugin.jpa") version "2.0.21"
     kotlin("plugin.allopen") version "2.0.21"
-    id("io.quarkus") version "3.6.9"
+    id("io.quarkus") version "3.16.2"
 }
 
 group = "personal.my"
@@ -13,11 +13,7 @@ repositories {
 }
 
 dependencies {
-    annotationProcessor("io.quarkus:quarkus-extension-processor:3.6.9")
-
-    testImplementation(kotlin("test"))
-
-    implementation(enforcedPlatform("io.quarkus:quarkus-bom:3.6.9"))
+    implementation(enforcedPlatform("io.quarkus.platform:quarkus-bom:3.12.3"))
 
     implementation("io.quarkus:quarkus-spring-data-jpa")
 
@@ -27,9 +23,6 @@ dependencies {
     implementation("io.quarkus:quarkus-hibernate-validator")
 }
 
-tasks.test {
-    useJUnitPlatform()
-}
 kotlin {
     jvmToolchain(21)
 }

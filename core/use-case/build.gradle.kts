@@ -1,5 +1,5 @@
 plugins {
-    kotlin("jvm") version "2.1.10"
+    kotlin("jvm") version "2.0.21"
 }
 
 group = "personal.my"
@@ -10,13 +10,7 @@ repositories {
 }
 
 dependencies {
-    testImplementation(kotlin("test"))
-
     implementation(project(":core:domain"))
-}
-
-tasks.test {
-    useJUnitPlatform()
 }
 
 kotlin {

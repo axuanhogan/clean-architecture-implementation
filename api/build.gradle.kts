@@ -2,7 +2,7 @@ plugins {
     kotlin("jvm") version "2.0.21"
     kotlin("plugin.jpa") version "2.0.21"
     kotlin("plugin.allopen") version "2.0.21"
-    id("io.quarkus") version "3.6.9"
+    id("io.quarkus") version "3.16.2"
 }
 
 group = "personal.my"
@@ -13,9 +13,7 @@ repositories {
 }
 
 dependencies {
-    testImplementation(kotlin("test"))
-
-    implementation(enforcedPlatform("io.quarkus:quarkus-bom:3.6.9"))
+    implementation(enforcedPlatform("io.quarkus.platform:quarkus-bom:3.12.3"))
     implementation(project(":jpa"))
     implementation(project(":core:use-case"))
 
@@ -30,10 +28,6 @@ dependencies {
     implementation("io.quarkus:quarkus-hibernate-validator")
     implementation("io.quarkus:quarkus-jdbc-postgresql")
     implementation("io.quarkus:quarkus-liquibase")
-}
-
-tasks.test {
-    useJUnitPlatform()
 }
 
 kotlin {
