@@ -6,8 +6,7 @@ import org.hibernate.annotations.UpdateTimestamp
 import java.time.ZonedDateTime
 import java.util.UUID
 
-@Entity
-@Table(name = "users")
+@Entity(name = "users")
 class UserDAO(
     @Id
     var id: UUID,
