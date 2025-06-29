@@ -7,8 +7,11 @@ import personal.my.use_case.port.out.repository.UserRepository
 
 @ApplicationScoped
 class UseCaseConfig {
+
     @Produces
     fun userUseCase(userRepository: UserRepository): UserUseCase {
-        return UserUseCase(userRepository)
+        return UserUseCase(
+            userRepository = userRepository
+        )
     }
 }

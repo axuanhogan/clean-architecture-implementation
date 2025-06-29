@@ -59,6 +59,7 @@ import java.util.*
 class UserResource(
     private val userUseCase: UserUseCase
 ) {
+
     @GET
     @Path("/{userId}")
     @Operation(summary = "Get user")
@@ -82,6 +83,7 @@ class UserResource(
     fun getUser(
         @PathParam("userId") userId: String,
     ): Response {
+
         lateinit var user: UserPDO
 
         try {

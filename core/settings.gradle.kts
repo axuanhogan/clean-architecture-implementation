@@ -1,2 +1,2 @@
 rootProject.name = "core"
-include("use-case", "domain")
+include("domain", "use-case")

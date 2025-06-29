@@ -8,6 +8,7 @@ import java.util.*
 class UserUseCase(
     private val userRepository: UserRepository
 ) {
+
     fun getUser(id: UUID): UserPDO {
         val user: UserPDO = userRepository.findById(id = id) ?: throw UserNotFoundException(message = "User not found")
         return user
