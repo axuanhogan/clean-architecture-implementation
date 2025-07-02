@@ -84,7 +84,7 @@ class UserResource(
         @PathParam("userId") userId: String,
     ): Response {
 
-        lateinit var user: UserPDO
+        val user: UserPDO?
 
         try {
             user = userUseCase.getUser(id = UUID.fromString(userId))
