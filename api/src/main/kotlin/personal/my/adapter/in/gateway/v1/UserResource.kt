@@ -13,9 +13,8 @@ import org.eclipse.microprofile.openapi.annotations.media.SchemaProperty
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponses
 import personal.my.adapter.ResponseBean
-import personal.my.use_case.UserUseCase
-import personal.my.use_case.port.`in`.pdo.UserPDO
-import personal.my.use_case.port.out.repository.UserRepository.*
+import personal.my.core.use_case.UserUseCase
+import personal.my.core.port.`in`.pdo.UserPDO
 import java.util.*
 
 @Tag(name = "User")
@@ -84,16 +83,13 @@ class UserResource(
         @PathParam("userId") userId: String,
     ): Response {
 
-        val user: UserPDO?
-
-        try {
-            user = userUseCase.getUser(id = UUID.fromString(userId))
-        } catch (e: UserNotFoundException) {
-            return ResponseBean.unprocessableEntity(
-                code = "USER_NOT_FOUND",
-                message = "User not found"
-            )
-        }
+        val user: UserPDO = userUseCase.getUser(id = UUID.fromString(userId))
+            ?:  run {
+                return ResponseBean.unprocessableEntity(
+                    code = "USER_NOT_FOUND",
+                    message = "User not found"
+                )
+            }
 
         return ResponseBean.ok(
             data = GetUserResponse(

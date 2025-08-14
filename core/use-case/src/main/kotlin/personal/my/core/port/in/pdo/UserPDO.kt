@@ -1,4 +1,4 @@
-package personal.my.use_case.port.`in`.pdo
+package personal.my.core.port.`in`.pdo
 
 import java.util.*
 
