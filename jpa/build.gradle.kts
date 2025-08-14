@@ -14,7 +14,7 @@ val quarkusPlatformGroupId: String by project
 val quarkusPlatformArtifactId: String by project
 val quarkusPlatformVersion: String by project
 
-group = "personal.my"
+group = "com.axuanhogan"
 version = "1.0-SNAPSHOT"
 
 dependencies {

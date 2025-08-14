@@ -21,7 +21,7 @@ quarkus:
     change-log: db/root.yaml
   hibernate-orm:
     packages:
-      - 'personal.my.dao'
+      - 'com.axuanhogan.jpa.dao'
     log:
       sql: true
     database:
