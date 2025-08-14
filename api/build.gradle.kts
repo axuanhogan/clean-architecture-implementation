@@ -59,3 +59,7 @@ kotlin {
         javaParameters = true
     }
 }
+
+tasks.named("compileKotlin") {
+    dependsOn("compileQuarkusGeneratedSourcesJava")
+}

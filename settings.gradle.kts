@@ -2,6 +2,6 @@ plugins {
 }
 
 rootProject.name = "clean-architecture-implementation"
-include("api")
+include("core:domain", "core:use-case")
 include("jpa")
-include("core:use-case", "core:domain")
+include("api")
