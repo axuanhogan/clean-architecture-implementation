@@ -13,3 +13,6 @@ build/
 
 # Kotlin
 .kotlin
+
+# Claude
+CLAUDE.md
