@@ -6,6 +6,7 @@ plugins {
     kotlin("jvm") version "2.0.21"
     kotlin("plugin.allopen") version "2.0.21"
     kotlin("plugin.jpa") version "2.0.21"
+    application
 }
 
 repositories {
@@ -21,17 +22,16 @@ group = "com.axuanhogan"
 version = "1.0-SNAPSHOT"
 
 dependencies {
-    implementation(kotlin("stdlib-jdk8"))
     implementation(project(":core:use-case"))
+    implementation(kotlin("stdlib-jdk8"))
 
     implementation(enforcedPlatform("${quarkusPlatformGroupId}:${quarkusPlatformArtifactId}:${quarkusPlatformVersion}"))
 
     implementation("io.quarkus:quarkus-kotlin")
     implementation("io.quarkus:quarkus-arc")
+    implementation("io.quarkus:quarkus-hibernate-orm-panache")
     implementation("io.quarkus:quarkus-spring-data-jpa")
     implementation("io.quarkus:quarkus-jdbc-postgresql")
-    implementation("io.quarkus:quarkus-hibernate-orm-panache")
-    implementation("io.quarkus:quarkus-hibernate-validator")
 }
 
 allOpen {
