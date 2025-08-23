@@ -1,7 +1,7 @@
-package com.axuanhogan.adapter.mapper
+package com.axuanhogan.common.mapper
 
 import com.axuanhogan.core.port.`in`.pdo.UserPDO
-import com.axuanhogan.jpa.dao.UserDAO
+import com.axuanhogan.common.dao.UserDAO
 
 fun UserDAO.toPDO(): UserPDO {
     return UserPDO(

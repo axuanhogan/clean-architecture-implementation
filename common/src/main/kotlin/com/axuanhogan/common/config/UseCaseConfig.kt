@@ -1,4 +1,4 @@
-package com.axuanhogan.adapter.config
+package com.axuanhogan.common.config
 
 import jakarta.enterprise.context.ApplicationScoped
 import jakarta.enterprise.inject.Produces

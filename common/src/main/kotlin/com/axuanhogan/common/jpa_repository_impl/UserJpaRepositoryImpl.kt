@@ -1,8 +1,8 @@
-package com.axuanhogan.adapter.out.jpa_repository_impl
+package com.axuanhogan.common.jpa_repository_impl
 
 import jakarta.enterprise.context.ApplicationScoped
-import com.axuanhogan.adapter.mapper.toPDO
-import com.axuanhogan.adapter.out.jpa_repository.UserJpaRepository
+import com.axuanhogan.common.mapper.toPDO
+import com.axuanhogan.common.jpa_repository.UserJpaRepository
 import com.axuanhogan.core.port.`in`.pdo.UserPDO
 import com.axuanhogan.core.port.out.repository.UserRepository
 import java.util.*
