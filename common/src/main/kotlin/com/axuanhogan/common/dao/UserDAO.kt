@@ -1,4 +1,4 @@
-package com.axuanhogan.jpa.dao
+package com.axuanhogan.common.dao
 
 import jakarta.persistence.*
 import org.hibernate.annotations.CreationTimestamp

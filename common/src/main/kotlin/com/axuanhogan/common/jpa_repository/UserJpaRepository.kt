@@ -1,7 +1,7 @@
-package com.axuanhogan.adapter.out.jpa_repository
+package com.axuanhogan.common.jpa_repository
 
 import org.springframework.data.jpa.repository.JpaRepository
-import com.axuanhogan.jpa.dao.UserDAO
+import com.axuanhogan.common.dao.UserDAO
 import java.util.*
 
 interface UserJpaRepository: JpaRepository<UserDAO, UUID> {
