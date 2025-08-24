@@ -1,30 +1,25 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
 
 plugins {
-    kotlin("jvm") version "2.0.21"
-    `java-library`
+    kotlin("jvm") version "2.2.0"
 }
 
 repositories {
-    mavenCentral()
     mavenLocal()
+    mavenCentral()
 }
 
 dependencies {
 }
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_17
-    targetCompatibility = JavaVersion.VERSION_17
-    toolchain {
-        languageVersion.set(JavaLanguageVersion.of(17))
-    }
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
 }
 
-tasks.withType<KotlinJvmCompile>().configureEach {
+kotlin {
     compilerOptions {
-        jvmTarget.set(JvmTarget.JVM_17)
-        javaParameters.set(true)
+        jvmTarget = JvmTarget.JVM_21
+        javaParameters = true
     }
 }
