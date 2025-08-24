@@ -1,17 +1,15 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
 
 plugins {
-    id("io.quarkus") version "3.16.2"
-    kotlin("jvm") version "2.0.21"
-    kotlin("plugin.allopen") version "2.0.21"
-    kotlin("plugin.jpa") version "2.0.21"
-    application
+    id("io.quarkus") version "3.20.2.1"
+    kotlin("jvm") version "2.2.0"
+    kotlin("plugin.allopen") version "2.2.0"
+    kotlin("plugin.jpa") version "2.2.0"
 }
 
 repositories {
-    mavenCentral()
     mavenLocal()
+    mavenCentral()
 }
 
 val quarkusPlatformGroupId: String by project
@@ -42,20 +40,13 @@ allOpen {
 }
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_17
-    targetCompatibility = JavaVersion.VERSION_17
-    toolchain {
-        languageVersion.set(JavaLanguageVersion.of(17))
-    }
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
 }
 
-tasks.withType<KotlinJvmCompile>().configureEach {
+kotlin {
     compilerOptions {
-        jvmTarget.set(JvmTarget.JVM_17)      // Replaces kotlinOptions.jvmTarget
-        javaParameters.set(true)             // Replaces kotlinOptions.javaParameters
+        jvmTarget = JvmTarget.JVM_21
+        javaParameters = true
     }
-}
-
-tasks.named("compileKotlin") {
-    dependsOn("compileQuarkusGeneratedSourcesJava")
 }
