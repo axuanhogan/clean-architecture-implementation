@@ -10,9 +10,9 @@ import javax.crypto.spec.SecretKeySpec
 
 @ApplicationScoped
 class DAOAttributeConverter(
-    @ConfigProperty(name = "application.dao.encryption.enabled") private val enabled: Boolean,
-    @ConfigProperty(name = "application.dao.aes.key") private val key: String,
-    @ConfigProperty(name = "application.dao.aes.iv") private val iv: String,
+    @param:ConfigProperty(name = "application.dao.encryption.enabled") private val enabled: Boolean,
+    @param:ConfigProperty(name = "application.dao.aes.key") private val key: String,
+    @param:ConfigProperty(name = "application.dao.aes.iv") private val iv: String,
 ): AttributeConverter<String, String> {
 
     private val algorithm = "AES/CBC/PKCS5Padding"
