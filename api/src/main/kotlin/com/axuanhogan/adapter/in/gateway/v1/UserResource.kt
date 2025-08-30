@@ -97,6 +97,7 @@ class UserResource(
         return ResponseBean.ok(
             data = GetUserResponse(
                 id = user.id,
+                email = user.email,
                 name = user.name,
             )
         )
@@ -107,6 +108,10 @@ data class GetUserResponse(
     @field:JsonProperty("id")
     @field:Schema(required = true)
     val id: UUID,
+
+    @field:JsonProperty("email")
+    @field:Schema(required = true)
+    val email: String,
 
     @field:JsonProperty("name")
     @field:Schema(required = true)

@@ -43,3 +43,10 @@ quarkus:
   rest-client:
     connect-timeout: 15000
     read-timeout: 30000
+application:
+  dao:
+    encryption:
+      enabled: ${APPLICATION.DAO.ENCRYPTION.ENABLED}
+    aes:
+      key: ${APPLICATION.DAO.AES.KEY}
+      iv: ${APPLICATION.DAO.AES.IV}
