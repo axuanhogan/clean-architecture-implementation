@@ -20,7 +20,7 @@ class UserDAO(
     var name: String,
 ) {
     @field:CreationTimestamp
-    @Column(name = "create_date_time", updatable = false)
+    @Column(name = "creation_date_time", updatable = false)
     lateinit var createDateTime: ZonedDateTime
 
     @field:UpdateTimestamp
