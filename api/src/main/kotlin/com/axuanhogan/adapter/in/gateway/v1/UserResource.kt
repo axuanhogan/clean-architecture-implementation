@@ -1,6 +1,5 @@
 package com.axuanhogan.adapter.`in`.gateway.v1
 
-import com.fasterxml.jackson.annotation.JsonProperty
 import jakarta.ws.rs.*
 import jakarta.ws.rs.core.MediaType
 import jakarta.ws.rs.core.Response
@@ -13,6 +12,8 @@ import org.eclipse.microprofile.openapi.annotations.media.SchemaProperty
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponses
 import com.axuanhogan.adapter.ResponseBean
+import com.axuanhogan.adapter.`in`.gateway.v1.response.UserResourceResponse
+import com.axuanhogan.common.util.ErrorTrackingUtil
 import com.axuanhogan.core.use_case.UserUseCase
 import com.axuanhogan.core.port.`in`.pdo.UserPDO
 import java.util.*
@@ -71,7 +72,7 @@ class UserResource(
                     schema = Schema(
                         type = SchemaType.OBJECT,
                         properties = [
-                            SchemaProperty(name = "data", implementation = GetUserResponse::class)
+                            SchemaProperty(name = "data", implementation = UserResourceResponse.GetUser::class)
                         ]
                     ),
                     mediaType = MediaType.APPLICATION_JSON,
@@ -85,27 +86,20 @@ class UserResource(
 
         val user: UserPDO = userUseCase.getUser(id = UUID.fromString(userId))
             ?:  run {
+                val trackingCode = ErrorTrackingUtil.genTrackingCode()
                 return ResponseBean.unprocessableEntity(
                     code = "USER_NOT_FOUND",
-                    message = "User not found"
+                    message = "User not found",
+                    trackingCode = trackingCode,
                 )
             }
 
         return ResponseBean.ok(
-            data = GetUserResponse(
+            data = UserResourceResponse.GetUser(
                 id = user.id,
+                email = user.email,
                 name = user.name,
             )
         )
     }
 }
-
-data class GetUserResponse(
-    @field:JsonProperty("id")
-    @field:Schema(required = true)
-    val id: UUID,
-
-    @field:JsonProperty("name")
-    @field:Schema(required = true)
-    val name: String,
-)

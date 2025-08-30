@@ -17,6 +17,7 @@ class ResponseBean private constructor(
     @JsonInclude(JsonInclude.Include.NON_NULL)
     class ErrorResponseEntity(
         val error: Error,
+        var trackingCode: String? = null
     ) : ResponseEntity {
         class Error(val code: String, val message: String?)
     }
@@ -43,12 +44,14 @@ class ResponseBean private constructor(
         fun unprocessableEntity(
             code: String,
             message: String? = "Error",
+            trackingCode: String? = null,
         ): Response {
             return errorEntity(
                 status = 422,
                 reasonPhrase = "Unprocessable Entity",
                 code = code,
                 message = message,
+                trackingCode = trackingCode,
             )
         }
 
@@ -57,10 +60,16 @@ class ResponseBean private constructor(
             reasonPhrase: String,
             code: String,
             message: String? = "Error",
+            trackingCode: String? = null,
         ): Response {
-            val entity = ErrorResponseEntity(error = ErrorResponseEntity.Error(code = code, message = message))
+            val entity = ErrorResponseEntity(
+                error = ErrorResponseEntity.Error(
+                    code = code,
+                    message = message,
+                ),
+                trackingCode = trackingCode,
+            )
             return Response.status(status, reasonPhrase).entity(entity).build()
         }
     }
 }
-
