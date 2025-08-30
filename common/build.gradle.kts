@@ -1,7 +1,6 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
-    id("io.quarkus")
     kotlin("jvm")
     kotlin("plugin.allopen")
     kotlin("plugin.jpa")
@@ -17,11 +16,7 @@ dependencies {
 
     implementation(enforcedPlatform("${quarkusPlatformGroupId}:${quarkusPlatformArtifactId}:${quarkusPlatformVersion}"))
 
-    implementation("io.quarkus:quarkus-kotlin")
-    implementation("io.quarkus:quarkus-arc")
-    implementation("io.quarkus:quarkus-hibernate-orm-panache")
     implementation("io.quarkus:quarkus-spring-data-jpa")
-    implementation("io.quarkus:quarkus-jdbc-postgresql")
 }
 
 allOpen {
