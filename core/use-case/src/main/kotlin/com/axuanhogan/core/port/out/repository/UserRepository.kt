@@ -5,4 +5,6 @@ import java.util.*
 
 interface UserRepository {
     fun findAllById(id: UUID): UserPDO?
+
+    fun saveData(pdo: UserPDO)
 }

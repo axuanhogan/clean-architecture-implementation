@@ -19,4 +19,10 @@ interface UserResourceResponse {
         @field:Schema(required = true)
         val name: String,
     )
+
+    data class CreateUser(
+        @field:JsonProperty("message")
+        @field:Schema(required = true)
+        val message: String,
+    )
 }

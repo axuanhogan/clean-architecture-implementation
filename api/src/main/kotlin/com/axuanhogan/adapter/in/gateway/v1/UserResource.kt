@@ -12,10 +12,12 @@ import org.eclipse.microprofile.openapi.annotations.media.SchemaProperty
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponses
 import com.axuanhogan.adapter.ResponseBean
+import com.axuanhogan.adapter.`in`.gateway.v1.request.UserResourceRequest
 import com.axuanhogan.adapter.`in`.gateway.v1.response.UserResourceResponse
 import com.axuanhogan.common.util.ErrorTrackingUtil
 import com.axuanhogan.core.use_case.UserUseCase
 import com.axuanhogan.core.port.`in`.pdo.UserPDO
+import jakarta.ws.rs.core.Response.Status
 import java.util.*
 
 @Tag(name = "User")
@@ -62,7 +64,7 @@ class UserResource(
 
     @GET
     @Path("/{userId}")
-    @Operation(summary = "Get user")
+    @Operation(summary = "Get User")
     @APIResponses(
         APIResponse(
             responseCode = "200",
@@ -99,6 +101,55 @@ class UserResource(
                 id = user.id,
                 email = user.email,
                 name = user.name,
+            )
+        )
+    }
+
+    @POST
+    @Path("/")
+    @Operation(summary = "Create User")
+    @APIResponses(
+        APIResponse(
+            responseCode = "200",
+            description = "OK",
+            content = [
+                Content(
+                    schema = Schema(
+                        type = SchemaType.OBJECT,
+                        properties = [
+                            SchemaProperty(name = "data", implementation = UserResourceResponse.CreateUser::class)
+                        ]
+                    ),
+                    mediaType = MediaType.APPLICATION_JSON,
+                )
+            ]
+        )
+    )
+    fun createUser(
+        body: UserResourceRequest.CreateUser,
+    ): Response {
+
+        try {
+            userUseCase.createUser(
+                pdo = UserPDO(
+                    id = UUID.randomUUID(),
+                    email = body.email,
+                    name = body.name,
+                )
+            )
+        } catch (e: Exception) {
+            val trackingCode = ErrorTrackingUtil.genTrackingCode()
+            return ResponseBean.error(
+                status = Status.INTERNAL_SERVER_ERROR,
+                code = "CREATE_USER_FAILED",
+                message = "Create user failed",
+                trackingCode = trackingCode,
+            )
+        }
+
+        return ResponseBean.ok(
+            data = UserResourceResponse.CreateUser(
+                message = "niceeee"
             )
         )
     }

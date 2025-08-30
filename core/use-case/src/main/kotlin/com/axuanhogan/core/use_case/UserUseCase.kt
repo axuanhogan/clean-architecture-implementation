@@ -11,4 +11,8 @@ class UserUseCase(
     fun getUser(id: UUID): UserPDO? {
         return userRepository.findAllById(id = id)
     }
+
+    fun createUser(pdo: UserPDO){
+        return userRepository.saveData(pdo = pdo)
+    }
 }

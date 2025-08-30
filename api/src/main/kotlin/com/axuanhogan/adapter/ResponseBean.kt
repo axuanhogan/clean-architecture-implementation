@@ -32,12 +32,14 @@ class ResponseBean private constructor(
             status: Status,
             code: String,
             message: String? = "Error",
+            trackingCode: String? = null,
         ): Response {
             return errorEntity(
                 status = status.statusCode,
                 reasonPhrase = status.reasonPhrase,
                 code = code,
                 message = message,
+                trackingCode = trackingCode,
             )
         }
 
