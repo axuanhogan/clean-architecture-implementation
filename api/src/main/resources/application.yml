@@ -1,9 +1,12 @@
 quarkus:
   log:
+    sentry:
+      ~: ${QUARKUS.LOG.SENTRY.ENABLED}
+      dsn: ${QUARKUS.LOG.SENTRY.DSN}
+      in-app-packages: com.axuanhogan
+      environment: ${API.ENV}
+      level: ERROR
     level: INFO
-    category:
-      'org.jboss.resteasy.reactive.client.logging':
-        level: DEBUG
     console:
       format: '%d{yyyy-MM-dd HH:mm:ss.SSS} %-5p [%c{3.}:%L] [%X{REQUEST.ID}] %s%e%n'
   devservices:
