@@ -1,23 +1,15 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
-    id("io.quarkus") version "3.20.2.1"
-    kotlin("jvm") version "2.2.0"
-    kotlin("plugin.allopen") version "2.2.0"
-    kotlin("plugin.jpa") version "2.2.0"
-}
-
-repositories {
-    mavenLocal()
-    mavenCentral()
+    id("io.quarkus")
+    kotlin("jvm")
+    kotlin("plugin.allopen")
+    kotlin("plugin.jpa")
 }
 
 val quarkusPlatformGroupId: String by project
 val quarkusPlatformArtifactId: String by project
 val quarkusPlatformVersion: String by project
-
-group = "com.axuanhogan"
-version = "1.0-SNAPSHOT"
 
 dependencies {
     implementation(project(":core:use-case"))
