@@ -25,8 +25,8 @@ graph LR
                 adapter-in-gateway[Gateway]
             end
             subgraph adapter-out[Out]
-                adapter-out-service-impl[ServiceImpl]
-                adapter-out-repo-impl[RepositoryImpl]
+                adapter-out-client-impl[ClientImpl]
+                adapter-out-jpa-repo-impl[JpaRepositoryImpl]
                 adapter-out-client[Client]
                 adapter-out-jpa-repostory[JpaRepostory]
             end
@@ -39,7 +39,8 @@ graph LR
 		end
 		subgraph use-case-layer[Use Case Layer]
             subgraph port-out[Port Out（Interface）]
-                port-out-service[Service]
+                port-out-repo[Repository]
+                port-out-client[Client]
             end
             subgraph use-case[Use Case]
             end
@@ -50,11 +51,11 @@ graph LR
 	
 	adapter-in -- Use --> use-case
 	use-case -- Use --> domain-layer
-	adapter-out-client -. Inject .-> adapter-out-service-impl
-	adapter-out-jpa-repostory -. Inject .-> adapter-out-repo-impl
+	adapter-out-client -. Inject .-> adapter-out-client-impl
+	adapter-out-jpa-repostory -. Inject .-> adapter-out-jpa-repo-impl
 	adapter-out -. Implement .-> port-out
 	port-out -. Inject .-> use-case
 	
 	adapter-out-repo-impl -- Save or Get --> data-store
-	adapter-out-service-impl -- Request --> resource
+	adapter-out-client-impl -- Request --> resource
 ```
