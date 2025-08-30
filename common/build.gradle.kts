@@ -1,23 +1,14 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
-    id("io.quarkus") version "3.20.2.1"
-    kotlin("jvm") version "2.2.0"
-    kotlin("plugin.allopen") version "2.2.0"
-    kotlin("plugin.jpa") version "2.2.0"
-}
-
-repositories {
-    mavenLocal()
-    mavenCentral()
+    kotlin("jvm")
+    kotlin("plugin.allopen")
+    kotlin("plugin.jpa")
 }
 
 val quarkusPlatformGroupId: String by project
 val quarkusPlatformArtifactId: String by project
 val quarkusPlatformVersion: String by project
-
-group = "com.axuanhogan"
-version = "1.0-SNAPSHOT"
 
 dependencies {
     implementation(project(":core:use-case"))
@@ -25,11 +16,7 @@ dependencies {
 
     implementation(enforcedPlatform("${quarkusPlatformGroupId}:${quarkusPlatformArtifactId}:${quarkusPlatformVersion}"))
 
-    implementation("io.quarkus:quarkus-kotlin")
-    implementation("io.quarkus:quarkus-arc")
-    implementation("io.quarkus:quarkus-hibernate-orm-panache")
     implementation("io.quarkus:quarkus-spring-data-jpa")
-    implementation("io.quarkus:quarkus-jdbc-postgresql")
 }
 
 allOpen {

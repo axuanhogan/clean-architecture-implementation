@@ -1,11 +1,11 @@
 quarkus:
-  profile: local
+  profile: test
   log:
     sentry:
-      ~: ${QUARKUS.LOG.SENTRY.ENABLED}
-      dsn: ${QUARKUS.LOG.SENTRY.DSN}
+      ~: false
+      dsn: 'test'
       in-app-packages: com.axuanhogan
-      environment: ${API.ENV}
+      environment: local
       level: ERROR
     level: INFO
     console:
@@ -16,7 +16,7 @@ quarkus:
     db-kind: postgresql
     devservices:
       reuse: false
-      port: 5433
+      port: 5434
       db-name: postgres
       username: quarkus
       password: quarkus

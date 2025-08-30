@@ -1,0 +1,26 @@
+# Step 1: Build the uber-jar
+# ./gradlew clean api:build -Dquarkus.package.type=uber-jar -Dquarkus.profile=prod
+#
+# Step 2: Build the docker image
+# docker build -f src/main/docker/Dockerfile.uber-jar -t quarkus/api-jvm .
+#
+# Step 3: Run the container
+# docker run -i --rm -p 8080:8080 quarkus/api-jvm
+
+FROM registry.access.redhat.com/ubi8/openjdk-21:1.23
+
+ENV LANGUAGE="en_US:en"
+ENV TZ="Asia/Taipei"
+ENV JAVA_APP_JAR="/deployments/quarkus-run.jar"
+
+USER root
+RUN microdnf update -y \
+    && microdnf reinstall -y tzdata \
+    && microdnf clean all
+USER 185
+
+COPY build/*-runner.jar /deployments/quarkus-run.jar
+
+EXPOSE 8080
+
+ENTRYPOINT [ "/opt/jboss/container/java/run/run-java.sh" ]

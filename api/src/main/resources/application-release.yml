@@ -1,5 +1,5 @@
 quarkus:
-  profile: local
+  profile: release
   log:
     sentry:
       ~: ${QUARKUS.LOG.SENTRY.ENABLED}
@@ -11,15 +11,18 @@ quarkus:
     console:
       format: '%d{yyyy-MM-dd HH:mm:ss.SSS} %-5p [%c{3.}:%L] [%X{REQUEST.ID}] %s%e%n'
   devservices:
-    enabled: true
+    enabled: false
   datasource:
     db-kind: postgresql
-    devservices:
-      reuse: false
-      port: 5433
-      db-name: postgres
-      username: quarkus
-      password: quarkus
+    username: ${QUARKUS.DATASOURCE.USERNAME}
+    password: ${QUARKUS.DATASOURCE.PASSWORD}
+    jdbc:
+      url: jdbc:postgresql://${QUARKUS.DATASOURCE.JDBC.URL}:${QUARKUS.DATASOURCE.JDBC.PORT}/${QUARKUS.DATASOURCE.JDBC.NAME}
+      telemetry: false
+      initial-size: 1
+      min-size: 1
+      max-size: 3
+      validation-query-sql: select 1
   liquibase:
     enabled: true
     migrate-at-start: true
@@ -32,7 +35,7 @@ quarkus:
     database:
       generation: validate
   http:
-    host: localhost
+    host: 0.0.0.0
     access-log:
       enabled: true
     limits:
