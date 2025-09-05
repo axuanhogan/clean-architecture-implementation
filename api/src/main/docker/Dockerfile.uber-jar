@@ -1,5 +1,5 @@
 # Step 1: Build the uber-jar
-# ./gradlew clean api:build -Dquarkus.package.type=uber-jar -Dquarkus.profile=prod
+# ./gradlew clean api:build -Dquarkus.package.type=uber-jar -Dquarkus.profile=release
 #
 # Step 2: Build the docker image
 # docker build -f src/main/docker/Dockerfile.uber-jar -t quarkus/api-jvm .
