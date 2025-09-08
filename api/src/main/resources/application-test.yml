@@ -40,7 +40,21 @@ quarkus:
   rest-client:
     connect-timeout: 15000
     read-timeout: 30000
+mp:
+  jwt:
+    token:
+      header: Cookie
+      cookie: 'test'
+    verify:
+      issuer: 'test'
+      audiences: 'test'
+      publickey:
+        location: 'test'
+smallrye:
+  jwt:
+    always-check-authorization: true
 application:
+  domain-name: 'test-axuanhogan.com'
   dao:
     encryption:
       enabled: false
