@@ -1,35 +1,56 @@
-package com.axuanhogan.adapter
+package com.axuanhogan.common.util
 
 import com.fasterxml.jackson.annotation.JsonInclude
+import com.fasterxml.jackson.annotation.JsonProperty
 import jakarta.ws.rs.core.Response
-import jakarta.ws.rs.core.Response.Status
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 class ResponseBean private constructor(
 ) {
-    interface ResponseEntity
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     class SuccessResponseEntity<T>(
         val data: T,
-    ) : ResponseEntity
+    )
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     class ErrorResponseEntity(
         val error: Error,
         var trackingCode: String? = null
-    ) : ResponseEntity {
+    ) {
         class Error(val code: String, val message: String?)
     }
 
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    class KeycloakOidcErrorResponseEntity(
+        @param:JsonProperty("error") val error: String,
+        @param:JsonProperty("error_description") val errorDescription: String? = null
+    )
+
+    data class Header(
+        val name: String,
+        val value: String
+    )
+
     companion object {
-        fun ok(data: Any): Response {
+        fun ok(
+            data: Any? = null,
+            headers: List<Header> = emptyList(),
+        ): Response {
             val entity = SuccessResponseEntity(data = data)
-            return Response.status(Status.OK).entity(entity).build()
+            val response = Response.status(Response.Status.OK).entity(entity)
+
+            if (headers.isNotEmpty()) {
+                headers.forEach {
+                    response.header(it.name, it.value)
+                }
+            }
+
+            return response.build()
         }
 
         fun error(
-            status: Status,
+            status: Response.Status,
             code: String,
             message: String? = "Error",
             trackingCode: String? = null,

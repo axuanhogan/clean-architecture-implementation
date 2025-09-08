@@ -11,12 +11,14 @@ import org.eclipse.microprofile.openapi.annotations.media.Schema
 import org.eclipse.microprofile.openapi.annotations.media.SchemaProperty
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponses
-import com.axuanhogan.adapter.ResponseBean
+import com.axuanhogan.common.util.ResponseBean
 import com.axuanhogan.adapter.`in`.gateway.v1.request.UserResourceRequest
 import com.axuanhogan.adapter.`in`.gateway.v1.response.UserResourceResponse
+import com.axuanhogan.adapter.security.ResourcePermissionChecker
 import com.axuanhogan.common.util.ErrorTrackingUtil
 import com.axuanhogan.core.use_case.UserUseCase
 import com.axuanhogan.core.port.`in`.pdo.UserPDO
+import io.quarkus.security.PermissionsAllowed
 import jakarta.ws.rs.core.Response.Status
 import java.util.*
 
@@ -24,6 +26,7 @@ import java.util.*
 @Path("/v1/users")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
+@PermissionsAllowed(ResourcePermissionChecker.SCOPE_USER)
 @APIResponses(
     APIResponse(
         responseCode = "422",

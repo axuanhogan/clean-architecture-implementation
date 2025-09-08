@@ -1,4 +1,5 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     kotlin("jvm")
@@ -17,6 +18,7 @@ dependencies {
     implementation(enforcedPlatform("${quarkusPlatformGroupId}:${quarkusPlatformArtifactId}:${quarkusPlatformVersion}"))
 
     implementation("io.quarkus:quarkus-spring-data-jpa")
+    implementation("io.quarkus:quarkus-rest-client-jackson")
 }
 
 allOpen {

@@ -38,9 +38,29 @@ quarkus:
     limits:
       max-body-size: 100M
   rest-client:
-    connect-timeout: 15000
-    read-timeout: 30000
+    connect-timeout: 5000
+    read-timeout: 15000
+    keycloak-oidc:
+      url: ${KEYCLOAK.OIDC.BASE_URI}
+      scope: jakarta.inject.Singleton
+      read-timeout: 15000
+      client-id: ${KEYCLOAK.OIDC.CLIENT_ID}
+      client-secret: ${KEYCLOAK.OIDC.CLIENT_SECRET}
+mp:
+  jwt:
+    token:
+      header: Cookie
+      cookie: ${APPLICATION.AUTH.COOKIE_NAME}
+    verify:
+      issuer: ${KEYCLOAK.OIDC.ISSUER_URI}
+      audiences: ${KEYCLOAK.OIDC.AUDIENCES}
+      publickey:
+        location: ${KEYCLOAK.OIDC.JWKS_URI}
+smallrye:
+  jwt:
+    always-check-authorization: true
 application:
+  domain-name: ${APPLICATION.DOMAIN_NAME}
   dao:
     encryption:
       enabled: ${APPLICATION.DAO.ENCRYPTION.ENABLED}

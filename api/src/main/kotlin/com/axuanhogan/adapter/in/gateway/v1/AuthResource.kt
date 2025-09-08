@@ -1,0 +1,144 @@
+package com.axuanhogan.adapter.`in`.gateway.v1
+
+import com.axuanhogan.Application
+import com.axuanhogan.Application.Companion.domainName
+import com.axuanhogan.common.util.ResponseBean
+import com.axuanhogan.common.exception.KeycloakOidcException
+import com.axuanhogan.adapter.`in`.gateway.v1.request.AuthResourceRequest
+import com.axuanhogan.adapter.`in`.gateway.v1.response.AuthResourceResponse
+import com.axuanhogan.adapter.security.ResourcePermissionChecker
+import com.axuanhogan.adapter.security.ResourcePermissionChecker.Companion.SCOPE_USER
+import com.axuanhogan.common.client.KeycloakOidcClient
+import com.axuanhogan.common.util.ErrorTrackingUtil
+import com.axuanhogan.core.port.out.service.KeycloakOidcService
+import com.axuanhogan.core.port.out.service.KeycloakOidcService.TokenByPasswordGrantRequest
+import com.axuanhogan.core.use_case.AuthUseCase
+import io.quarkus.logging.Log
+import jakarta.ws.rs.Consumes
+import jakarta.ws.rs.POST
+import jakarta.ws.rs.Path
+import jakarta.ws.rs.Produces
+import jakarta.ws.rs.core.MediaType
+import jakarta.ws.rs.core.Response
+import jakarta.ws.rs.core.Response.Status
+import org.eclipse.microprofile.openapi.annotations.Operation
+import org.eclipse.microprofile.openapi.annotations.enums.SchemaType
+import org.eclipse.microprofile.openapi.annotations.media.Content
+import org.eclipse.microprofile.openapi.annotations.media.Schema
+import org.eclipse.microprofile.openapi.annotations.media.SchemaProperty
+import org.eclipse.microprofile.openapi.annotations.responses.APIResponse
+import org.eclipse.microprofile.openapi.annotations.responses.APIResponses
+import org.eclipse.microprofile.openapi.annotations.tags.Tag
+
+@Tag(name = "Auth")
+@Path("/v1/auth")
+@Consumes(MediaType.APPLICATION_JSON)
+@Produces(MediaType.APPLICATION_JSON)
+@APIResponses(
+    APIResponse(
+        responseCode = "422",
+        description = "Unprocessable Entity",
+        content = [
+            Content(
+                schema = Schema(implementation = ResponseBean.ErrorResponseEntity::class),
+                mediaType = MediaType.APPLICATION_JSON,
+                example = """{
+                        "error": {
+                            "code": "ERROR",
+                            "message": "ERROR_MESSAGE"
+                        },
+                        "extra": null
+                    }"""
+            )
+        ]
+    ),
+    APIResponse(
+        responseCode = "500",
+        description = "Internal Server Error",
+        content = [
+            Content(
+                schema = Schema(implementation = ResponseBean.ErrorResponseEntity::class),
+                mediaType = MediaType.APPLICATION_JSON,
+                example = """{
+                        "error": {
+                            "code": "ERROR",
+                            "message": "ERROR_MESSAGE"
+                        },
+                        "extra": null
+                    }"""
+            )
+        ]
+    )
+)
+class AuthResource (
+    private val authUseCase: AuthUseCase
+) {
+
+    @POST
+    @Path("/login")
+    @Operation(summary = "登入")
+    @APIResponses(
+        APIResponse(
+            responseCode = "200",
+            description = "OK",
+            content = [
+                Content(
+                    schema = Schema(
+                        type = SchemaType.OBJECT,
+                        properties = [
+                            SchemaProperty(
+                                name = "data",
+                                implementation = AuthResourceResponse.Login::class
+                            )
+                        ]
+                    ),
+                    mediaType = MediaType.APPLICATION_JSON,
+                )
+            ]
+        )
+    )
+    fun login(
+        body: AuthResourceRequest.Login
+    ) : Response {
+
+        try {
+            val token = authUseCase.tokenByPasswordGrant(
+                TokenByPasswordGrantRequest(
+                    clientId = KeycloakOidcClient.Client.CLEAN_ARCHITECTURE_IMPLEMENTATION.name,
+                    clientSecret = Application.ClientSecret.cleanArchitectureImplementation,
+                    username = body.email,
+                    password = body.password,
+                    scope = SCOPE_USER,
+                )
+            )
+
+            return ResponseBean.ok(
+                data = AuthResourceResponse.Login(
+                    message = "niceeee"
+                ),
+                headers = listOf(
+                    ResponseBean.Header(
+                        name = "Set-Cookie",
+                        value = "${ResourcePermissionChecker.authCookieName}=$token; Path=/; Secure=true; SameSite=Lax; HttpOnly=true; Domain=$domainName"
+                    )
+                )
+            )
+        } catch (e: KeycloakOidcException) {
+            Log.error("Login failed: get Keycloak OIDC Authorization Token failed", e)
+            return ResponseBean.error(
+                status = Status.INTERNAL_SERVER_ERROR,
+                code = "LOGIN_FAILED",
+                message = "Login failed",
+                trackingCode = ErrorTrackingUtil.genTrackingCode(),
+            )
+        } catch (e: Exception) {
+            Log.error("Login failed", e)
+            return ResponseBean.error(
+                status = Status.INTERNAL_SERVER_ERROR,
+                code = "LOGIN_FAILED",
+                message = "Login failed",
+                trackingCode = ErrorTrackingUtil.genTrackingCode(),
+            )
+        }
+    }
+}

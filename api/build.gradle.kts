@@ -31,6 +31,8 @@ dependencies {
     implementation("io.quarkus:quarkus-jdbc-postgresql")
     implementation("io.quarkus:quarkus-liquibase")
     implementation("io.quarkus:quarkus-config-yaml")
+    implementation("io.quarkus:quarkus-smallrye-jwt")
+    implementation("io.quarkus:quarkus-smallrye-jwt-build")
     implementation("io.quarkiverse.loggingsentry:quarkus-logging-sentry:2.0.4")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.15.2")
 
