@@ -15,9 +15,10 @@ import com.axuanhogan.common.util.ResponseBean
 import com.axuanhogan.adapter.`in`.gateway.v1.request.UserResourceRequest
 import com.axuanhogan.adapter.`in`.gateway.v1.response.UserResourceResponse
 import com.axuanhogan.adapter.security.ResourcePermissionChecker
-import com.axuanhogan.common.util.ErrorTrackingUtil
+import com.axuanhogan.common.util.RandomCodeUtil
 import com.axuanhogan.core.use_case.UserUseCase
 import com.axuanhogan.core.port.`in`.pdo.UserPDO
+import io.quarkus.logging.Log
 import io.quarkus.security.PermissionsAllowed
 import jakarta.ws.rs.core.Response.Status
 import java.util.*
@@ -88,10 +89,9 @@ class UserResource(
     fun getUser(
         @PathParam("userId") userId: String,
     ): Response {
-
         val user: UserPDO = userUseCase.getUser(id = UUID.fromString(userId))
             ?:  run {
-                val trackingCode = ErrorTrackingUtil.genTrackingCode()
+                val trackingCode = RandomCodeUtil.gen(length = 8, needTime = false)
                 return ResponseBean.unprocessableEntity(
                     code = "USER_NOT_FOUND",
                     message = "User not found",
@@ -141,7 +141,8 @@ class UserResource(
                 )
             )
         } catch (e: Exception) {
-            val trackingCode = ErrorTrackingUtil.genTrackingCode()
+            val trackingCode = RandomCodeUtil.gen(length = 8, needTime = false)
+            Log.error("Login failed: get Keycloak OIDC Authorization Token failed, trackingCode: $trackingCode", e)
             return ResponseBean.error(
                 status = Status.INTERNAL_SERVER_ERROR,
                 code = "CREATE_USER_FAILED",
