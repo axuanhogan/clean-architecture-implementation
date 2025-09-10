@@ -1,7 +1,6 @@
 package com.axuanhogan.adapter.`in`.gateway.v1
 
 import com.axuanhogan.Application
-import com.axuanhogan.Application.Companion.domainName
 import com.axuanhogan.common.util.ResponseBean
 import com.axuanhogan.common.exception.KeycloakOidcException
 import com.axuanhogan.adapter.`in`.gateway.v1.request.AuthResourceRequest
@@ -9,8 +8,7 @@ import com.axuanhogan.adapter.`in`.gateway.v1.response.AuthResourceResponse
 import com.axuanhogan.adapter.security.ResourcePermissionChecker
 import com.axuanhogan.adapter.security.ResourcePermissionChecker.Companion.SCOPE_USER
 import com.axuanhogan.common.client.KeycloakOidcClient
-import com.axuanhogan.common.util.ErrorTrackingUtil
-import com.axuanhogan.core.port.out.service.KeycloakOidcService
+import com.axuanhogan.common.util.RandomCodeUtil
 import com.axuanhogan.core.port.out.service.KeycloakOidcService.TokenByPasswordGrantRequest
 import com.axuanhogan.core.use_case.AuthUseCase
 import io.quarkus.logging.Log
@@ -21,6 +19,7 @@ import jakarta.ws.rs.Produces
 import jakarta.ws.rs.core.MediaType
 import jakarta.ws.rs.core.Response
 import jakarta.ws.rs.core.Response.Status
+import org.eclipse.microprofile.config.inject.ConfigProperty
 import org.eclipse.microprofile.openapi.annotations.Operation
 import org.eclipse.microprofile.openapi.annotations.enums.SchemaType
 import org.eclipse.microprofile.openapi.annotations.media.Content
@@ -71,6 +70,8 @@ import org.eclipse.microprofile.openapi.annotations.tags.Tag
     )
 )
 class AuthResource (
+    @param:ConfigProperty(name = "quarkus.rest-client.keycloak-oidc.client-secret") val clientSecret: String,
+    @param:ConfigProperty(name = "application.domain-name") val domainName: String,
     private val authUseCase: AuthUseCase
 ) {
 
@@ -105,7 +106,7 @@ class AuthResource (
             val token = authUseCase.tokenByPasswordGrant(
                 TokenByPasswordGrantRequest(
                     clientId = KeycloakOidcClient.Client.CLEAN_ARCHITECTURE_IMPLEMENTATION.name,
-                    clientSecret = Application.ClientSecret.cleanArchitectureImplementation,
+                    clientSecret = clientSecret,
                     username = body.email,
                     password = body.password,
                     scope = SCOPE_USER,
@@ -124,20 +125,22 @@ class AuthResource (
                 )
             )
         } catch (e: KeycloakOidcException) {
-            Log.error("Login failed: get Keycloak OIDC Authorization Token failed", e)
+            val trackingCode = RandomCodeUtil.gen(length = 8, needTime = false)
+            Log.error("Login failed: get Keycloak OIDC Authorization Token failed, trackingCode: $trackingCode", e)
             return ResponseBean.error(
                 status = Status.INTERNAL_SERVER_ERROR,
                 code = "LOGIN_FAILED",
                 message = "Login failed",
-                trackingCode = ErrorTrackingUtil.genTrackingCode(),
+                trackingCode = trackingCode,
             )
         } catch (e: Exception) {
-            Log.error("Login failed", e)
+            val trackingCode = RandomCodeUtil.gen(length = 8, needTime = false)
+            Log.error("Login failed, trackingCode: $trackingCode", e)
             return ResponseBean.error(
                 status = Status.INTERNAL_SERVER_ERROR,
                 code = "LOGIN_FAILED",
                 message = "Login failed",
-                trackingCode = ErrorTrackingUtil.genTrackingCode(),
+                trackingCode = trackingCode,
             )
         }
     }
