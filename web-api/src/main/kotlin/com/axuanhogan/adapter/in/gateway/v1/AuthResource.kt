@@ -1,6 +1,5 @@
 package com.axuanhogan.adapter.`in`.gateway.v1
 
-import com.axuanhogan.Application
 import com.axuanhogan.common.util.ResponseBean
 import com.axuanhogan.common.exception.KeycloakOidcException
 import com.axuanhogan.adapter.`in`.gateway.v1.request.AuthResourceRequest
@@ -9,8 +8,8 @@ import com.axuanhogan.adapter.security.ResourcePermissionChecker
 import com.axuanhogan.adapter.security.ResourcePermissionChecker.Companion.SCOPE_USER
 import com.axuanhogan.common.client.KeycloakOidcClient
 import com.axuanhogan.common.util.RandomCodeUtil
-import com.axuanhogan.core.port.out.service.KeycloakOidcService.TokenByPasswordGrantRequest
-import com.axuanhogan.core.use_case.AuthUseCase
+import com.axuanhogan.core.use_case.auth.GetTokenByPasswordGrantUseCase
+import com.axuanhogan.core.use_case.auth.GetTokenByPasswordGrantUseCaseInput
 import io.quarkus.logging.Log
 import jakarta.ws.rs.Consumes
 import jakarta.ws.rs.POST
@@ -72,11 +71,11 @@ import org.eclipse.microprofile.openapi.annotations.tags.Tag
 class AuthResource (
     @param:ConfigProperty(name = "quarkus.rest-client.keycloak-oidc.client-secret") val clientSecret: String,
     @param:ConfigProperty(name = "application.domain-name") val domainName: String,
-    private val authUseCase: AuthUseCase
+    private val getTokenByPasswordGrantUseCase: GetTokenByPasswordGrantUseCase
 ) {
 
     @POST
-    @Path("/login")
+    @Path("/sign-in")
     @Operation(summary = "登入")
     @APIResponses(
         APIResponse(
@@ -89,7 +88,7 @@ class AuthResource (
                         properties = [
                             SchemaProperty(
                                 name = "data",
-                                implementation = AuthResourceResponse.Login::class
+                                implementation = AuthResourceResponse.SignIn::class
                             )
                         ]
                     ),
@@ -98,13 +97,13 @@ class AuthResource (
             ]
         )
     )
-    fun login(
-        body: AuthResourceRequest.Login
+    fun signIn(
+        body: AuthResourceRequest.SignIn
     ) : Response {
 
         try {
-            val token = authUseCase.tokenByPasswordGrant(
-                TokenByPasswordGrantRequest(
+            val token = getTokenByPasswordGrantUseCase.execute(
+                input = GetTokenByPasswordGrantUseCaseInput(
                     clientId = KeycloakOidcClient.Client.CLEAN_ARCHITECTURE_IMPLEMENTATION.name,
                     clientSecret = clientSecret,
                     username = body.email,
@@ -114,7 +113,7 @@ class AuthResource (
             )
 
             return ResponseBean.ok(
-                data = AuthResourceResponse.Login(
+                data = AuthResourceResponse.SignIn(
                     message = "niceeee"
                 ),
                 headers = listOf(
@@ -126,20 +125,20 @@ class AuthResource (
             )
         } catch (e: KeycloakOidcException) {
             val trackingCode = RandomCodeUtil.gen(length = 8, needTime = false)
-            Log.error("Login failed: get Keycloak OIDC Authorization Token failed, trackingCode: $trackingCode", e)
+            Log.error("Sign in failed: get Keycloak OIDC Authorization Token failed, trackingCode: $trackingCode", e)
             return ResponseBean.error(
                 status = Status.INTERNAL_SERVER_ERROR,
-                code = "LOGIN_FAILED",
-                message = "Login failed",
+                code = "SIGN_IN_FAILED",
+                message = "Sign in failed",
                 trackingCode = trackingCode,
             )
         } catch (e: Exception) {
             val trackingCode = RandomCodeUtil.gen(length = 8, needTime = false)
-            Log.error("Login failed, trackingCode: $trackingCode", e)
+            Log.error("Sign in failed, trackingCode: $trackingCode", e)
             return ResponseBean.error(
                 status = Status.INTERNAL_SERVER_ERROR,
-                code = "LOGIN_FAILED",
-                message = "Login failed",
+                code = "SIGN_IN_FAILED",
+                message = "Sign in failed",
                 trackingCode = trackingCode,
             )
         }

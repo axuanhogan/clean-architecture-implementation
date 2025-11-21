@@ -16,8 +16,11 @@ import com.axuanhogan.adapter.`in`.gateway.v1.request.UserResourceRequest
 import com.axuanhogan.adapter.`in`.gateway.v1.response.UserResourceResponse
 import com.axuanhogan.adapter.security.ResourcePermissionChecker
 import com.axuanhogan.common.util.RandomCodeUtil
-import com.axuanhogan.core.use_case.UserUseCase
 import com.axuanhogan.core.port.`in`.pdo.UserPDO
+import com.axuanhogan.core.use_case.user.CreateUserUseCase
+import com.axuanhogan.core.use_case.user.CreateUserUseCaseInput
+import com.axuanhogan.core.use_case.user.GetUserUseCase
+import com.axuanhogan.core.use_case.user.GetUserUseCaseInput
 import io.quarkus.logging.Log
 import io.quarkus.security.PermissionsAllowed
 import jakarta.ws.rs.core.Response.Status
@@ -63,7 +66,8 @@ import java.util.*
     )
 )
 class UserResource(
-    private val userUseCase: UserUseCase
+    private val getUserUseCase: GetUserUseCase,
+    private val createUserUseCase: CreateUserUseCase,
 ) {
 
     @GET
@@ -89,15 +93,18 @@ class UserResource(
     fun getUser(
         @PathParam("userId") userId: String,
     ): Response {
-        val user: UserPDO = userUseCase.getUser(id = UUID.fromString(userId))
-            ?:  run {
-                val trackingCode = RandomCodeUtil.gen(length = 8, needTime = false)
-                return ResponseBean.unprocessableEntity(
-                    code = "USER_NOT_FOUND",
-                    message = "User not found",
-                    trackingCode = trackingCode,
-                )
-            }
+        val user: UserPDO = getUserUseCase.execute(
+            input = GetUserUseCaseInput(
+                userId = UUID.fromString(userId),
+            )
+        ).userPDO ?: run {
+            val trackingCode = RandomCodeUtil.gen(length = 8, needTime = false)
+            return ResponseBean.unprocessableEntity(
+                code = "USER_NOT_FOUND",
+                message = "User not found",
+                trackingCode = trackingCode,
+            )
+        }
 
         return ResponseBean.ok(
             data = UserResourceResponse.GetUser(
@@ -133,16 +140,18 @@ class UserResource(
     ): Response {
 
         try {
-            userUseCase.createUser(
-                pdo = UserPDO(
-                    id = UUID.randomUUID(),
-                    email = body.email,
-                    name = body.name,
+            createUserUseCase.execute(
+                input = CreateUserUseCaseInput(
+                    userPDO = UserPDO(
+                        id = UUID.randomUUID(),
+                        email = body.email,
+                        name = body.name,
+                    )
                 )
             )
         } catch (e: Exception) {
             val trackingCode = RandomCodeUtil.gen(length = 8, needTime = false)
-            Log.error("Login failed: get Keycloak OIDC Authorization Token failed, trackingCode: $trackingCode", e)
+            Log.error("create user failed: get Keycloak OIDC Authorization Token failed, trackingCode: $trackingCode", e)
             return ResponseBean.error(
                 status = Status.INTERNAL_SERVER_ERROR,
                 code = "CREATE_USER_FAILED",

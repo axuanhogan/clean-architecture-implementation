@@ -5,7 +5,7 @@ import org.eclipse.microprofile.openapi.annotations.media.Schema
 
 interface AuthResourceRequest {
 
-    data class Login(
+    data class SignIn(
         @field:JsonProperty("email")
         @field:Schema(required = true)
         val email: String,
