@@ -1,0 +1,66 @@
+quarkus:
+  profile: release
+  log:
+    sentry:
+      ~: ${QUARKUS.LOG.SENTRY.ENABLED}
+      dsn: ${QUARKUS.LOG.SENTRY.DSN}
+      in-app-packages: com.axuanhogan
+      environment: ${API.ENV}
+      level: ERROR
+    level: INFO
+    console:
+      format: '%d{yyyy-MM-dd HH:mm:ss.SSS} %-5p [%c{3.}:%L] [%X{REQUEST.ID}] %s%e%n'
+  devservices:
+    enabled: false
+  datasource:
+    db-kind: postgresql
+    username: ${QUARKUS.DATASOURCE.USERNAME}
+    password: ${QUARKUS.DATASOURCE.PASSWORD}
+    jdbc:
+      url: jdbc:postgresql://${QUARKUS.DATASOURCE.JDBC.URL}:${QUARKUS.DATASOURCE.JDBC.PORT}/${QUARKUS.DATASOURCE.JDBC.NAME}
+      telemetry: false
+      initial-size: 1
+      min-size: 1
+      max-size: 3
+      validation-query-sql: select 1
+  liquibase:
+    enabled: true
+    migrate-at-start: true
+    change-log: db/root.yaml
+  hibernate-orm:
+    packages:
+      - 'com.axuanhogan.common.dao'
+    log:
+      sql: true
+    schema-management:
+      strategy: validate
+  http:
+    host: 0.0.0.0
+    access-log:
+      enabled: true
+    limits:
+      max-body-size: 100M
+  rest-client:
+    connect-timeout: 15000
+    read-timeout: 30000
+mp:
+  jwt:
+    token:
+      header: Cookie
+      cookie: ${APPLICATION.AUTH.COOKIE_NAME}
+    verify:
+      issuer: ${KEYCLOAK.OIDC.ISSUER_URI}
+      audiences: ${KEYCLOAK.OIDC.AUDIENCES}
+      publickey:
+        location: ${KEYCLOAK.OIDC.JWKS_URI}
+smallrye:
+  jwt:
+    always-check-authorization: true
+application:
+  domain-name: ${APPLICATION.DOMAIN_NAME}
+  dao:
+    encryption:
+      enabled: ${APPLICATION.DAO.ENCRYPTION.ENABLED}
+    aes:
+      key: ${APPLICATION.DAO.AES.KEY}
+      iv: ${APPLICATION.DAO.AES.IV}

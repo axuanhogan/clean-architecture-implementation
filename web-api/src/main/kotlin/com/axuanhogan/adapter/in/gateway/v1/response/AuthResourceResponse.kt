@@ -5,7 +5,7 @@ import org.eclipse.microprofile.openapi.annotations.media.Schema
 
 interface AuthResourceResponse {
 
-    data class Login(
+    data class SignIn(
         @field:JsonProperty("message")
         @field:Schema(required = true)
         val message: String,

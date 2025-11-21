@@ -2,9 +2,9 @@ package com.axuanhogan.core.port.out.service
 
 interface KeycloakOidcService {
 
-    fun tokenByPasswordGrant(body: TokenByPasswordGrantRequest): TokenByPasswordGrantResponse
+    fun getTokenByPasswordGrant(body: GetTokenByPasswordGrantBody): GetTokenByPasswordGrantResponse
 
-    data class TokenByPasswordGrantRequest(
+    data class GetTokenByPasswordGrantBody(
         val clientId: String,
         val clientSecret: String,
         val username: String,
@@ -12,7 +12,7 @@ interface KeycloakOidcService {
         val scope: String? = null,
     )
 
-    data class TokenByPasswordGrantResponse(
+    data class GetTokenByPasswordGrantResponse(
         val accessToken: String,
         val expiresIn: Int,
         val refreshToken: String,

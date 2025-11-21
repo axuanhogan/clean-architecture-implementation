@@ -2,8 +2,8 @@ package com.axuanhogan.common.service_impl
 
 import com.axuanhogan.common.client.KeycloakOidcClient
 import com.axuanhogan.core.port.out.service.KeycloakOidcService
-import com.axuanhogan.core.port.out.service.KeycloakOidcService.TokenByPasswordGrantRequest
-import com.axuanhogan.core.port.out.service.KeycloakOidcService.TokenByPasswordGrantResponse
+import com.axuanhogan.core.port.out.service.KeycloakOidcService.GetTokenByPasswordGrantBody
+import com.axuanhogan.core.port.out.service.KeycloakOidcService.GetTokenByPasswordGrantResponse
 import jakarta.enterprise.context.ApplicationScoped
 import org.eclipse.microprofile.rest.client.inject.RestClient
 
@@ -12,8 +12,8 @@ class KeycloakOidcServiceImpl(
     @param:RestClient private val client: KeycloakOidcClient,
 ): KeycloakOidcService {
 
-    override fun tokenByPasswordGrant(body: TokenByPasswordGrantRequest): TokenByPasswordGrantResponse {
-        val result = client.tokenByPasswordGrant(
+    override fun getTokenByPasswordGrant(body: GetTokenByPasswordGrantBody): GetTokenByPasswordGrantResponse {
+        val result = client.getTokenByPasswordGrant(
             grantType = "password",
             clientId = body.clientId,
             clientSecret = body.clientSecret,
@@ -22,7 +22,7 @@ class KeycloakOidcServiceImpl(
             scope = body.scope
         )
 
-        return TokenByPasswordGrantResponse(
+        return GetTokenByPasswordGrantResponse(
             accessToken = result.accessToken,
             expiresIn = result.expiresIn,
             refreshToken = result.refreshToken,

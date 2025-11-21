@@ -1,11 +1,11 @@
 quarkus:
-  profile: local
+  profile: test
   log:
     sentry:
-      ~: ${QUARKUS.LOG.SENTRY.ENABLED}
-      dsn: ${QUARKUS.LOG.SENTRY.DSN}
+      ~: false
+      dsn: 'test'
       in-app-packages: com.axuanhogan
-      environment: ${API.ENV}
+      environment: local
       level: ERROR
     level: INFO
     console:
@@ -16,7 +16,7 @@ quarkus:
     db-kind: postgresql
     devservices:
       reuse: false
-      port: 5433
+      port: 5434
       db-name: postgres
       username: quarkus
       password: quarkus
@@ -29,8 +29,8 @@ quarkus:
       - 'com.axuanhogan.common.dao'
     log:
       sql: true
-    database:
-      generation: validate
+    schema-management:
+      strategy: validate
   http:
     host: localhost
     access-log:
@@ -38,32 +38,26 @@ quarkus:
     limits:
       max-body-size: 100M
   rest-client:
-    connect-timeout: 5000
-    read-timeout: 15000
-    keycloak-oidc:
-      url: ${KEYCLOAK.OIDC.BASE_URI}
-      scope: jakarta.inject.Singleton
-      read-timeout: 15000
-      client-id: ${KEYCLOAK.OIDC.CLIENT_ID}
-      client-secret: ${KEYCLOAK.OIDC.CLIENT_SECRET}
+    connect-timeout: 15000
+    read-timeout: 30000
 mp:
   jwt:
     token:
       header: Cookie
-      cookie: ${APPLICATION.AUTH.COOKIE_NAME}
+      cookie: 'test'
     verify:
-      issuer: ${KEYCLOAK.OIDC.ISSUER_URI}
-      audiences: ${KEYCLOAK.OIDC.AUDIENCES}
+      issuer: 'test'
+      audiences: 'test'
       publickey:
-        location: ${KEYCLOAK.OIDC.JWKS_URI}
+        location: 'test'
 smallrye:
   jwt:
     always-check-authorization: true
 application:
-  domain-name: ${APPLICATION.DOMAIN_NAME}
+  domain-name: 'test-axuanhogan.com'
   dao:
     encryption:
-      enabled: ${APPLICATION.DAO.ENCRYPTION.ENABLED}
+      enabled: false
     aes:
-      key: ${APPLICATION.DAO.AES.KEY}
-      iv: ${APPLICATION.DAO.AES.IV}
+      key: 'key'
+      iv: 'iv'

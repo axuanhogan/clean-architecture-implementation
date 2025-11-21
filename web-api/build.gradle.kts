@@ -33,7 +33,7 @@ dependencies {
     implementation("io.quarkus:quarkus-config-yaml")
     implementation("io.quarkus:quarkus-smallrye-jwt")
     implementation("io.quarkus:quarkus-smallrye-jwt-build")
-    implementation("io.quarkiverse.loggingsentry:quarkus-logging-sentry:2.0.4")
+    implementation("io.quarkiverse.loggingsentry:quarkus-logging-sentry:2.2.0")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.15.2")
 
     testImplementation("io.quarkus:quarkus-junit5")

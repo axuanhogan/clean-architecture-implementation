@@ -19,7 +19,7 @@ graph LR
 		web[Web]
 	end
 	
-	subgraph api[API]
+	subgraph web-api[Web API]
         subgraph adapter[Adapter]
             subgraph adapter-in[In]
                 adapter-in-gateway[Gateway]
