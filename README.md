@@ -16,7 +16,7 @@ graph LR
 	end
 		
 	subgraph External In
-		web[Web]
+		web-api[Web API]
 	end
 	
 	subgraph api[API]
