@@ -1,23 +1,20 @@
 package com.axuanhogan.adapter.`in`.gateway.v1
 
 import com.axuanhogan.common.util.ResponseBean
-import com.axuanhogan.common.exception.KeycloakOidcException
 import com.axuanhogan.adapter.`in`.gateway.v1.request.AuthResourceRequest
 import com.axuanhogan.adapter.`in`.gateway.v1.response.AuthResourceResponse
 import com.axuanhogan.adapter.security.ResourcePermissionChecker
 import com.axuanhogan.adapter.security.ResourcePermissionChecker.Companion.SCOPE_USER
 import com.axuanhogan.common.client.KeycloakOidcClient
-import com.axuanhogan.common.util.RandomCodeUtil
 import com.axuanhogan.core.use_case.auth.GetTokenByPasswordGrantUseCase
 import com.axuanhogan.core.use_case.auth.GetTokenByPasswordGrantUseCaseInput
-import io.quarkus.logging.Log
 import jakarta.ws.rs.Consumes
 import jakarta.ws.rs.POST
 import jakarta.ws.rs.Path
 import jakarta.ws.rs.Produces
 import jakarta.ws.rs.core.MediaType
+import jakarta.ws.rs.core.NewCookie
 import jakarta.ws.rs.core.Response
-import jakarta.ws.rs.core.Response.Status
 import org.eclipse.microprofile.config.inject.ConfigProperty
 import org.eclipse.microprofile.openapi.annotations.Operation
 import org.eclipse.microprofile.openapi.annotations.enums.SchemaType
@@ -69,7 +66,6 @@ import org.eclipse.microprofile.openapi.annotations.tags.Tag
     )
 )
 class AuthResource (
-    @param:ConfigProperty(name = "quarkus.rest-client.keycloak-oidc.client-secret") val clientSecret: String,
     @param:ConfigProperty(name = "application.domain-name") val domainName: String,
     private val getTokenByPasswordGrantUseCase: GetTokenByPasswordGrantUseCase
 ) {
@@ -101,46 +97,30 @@ class AuthResource (
         body: AuthResourceRequest.SignIn
     ) : Response {
 
-        try {
-            val token = getTokenByPasswordGrantUseCase.execute(
-                input = GetTokenByPasswordGrantUseCaseInput(
-                    clientId = KeycloakOidcClient.Client.CLEAN_ARCHITECTURE_IMPLEMENTATION.name,
-                    clientSecret = clientSecret,
-                    username = body.email,
-                    password = body.password,
-                    scope = SCOPE_USER,
-                )
+        val token = getTokenByPasswordGrantUseCase.execute(
+            input = GetTokenByPasswordGrantUseCaseInput(
+                username = body.email,
+                password = body.password,
+                scope = SCOPE_USER,
             )
+        )
 
-            return ResponseBean.ok(
-                data = AuthResourceResponse.SignIn(
-                    message = "niceeee"
-                ),
-                headers = listOf(
-                    ResponseBean.Header(
-                        name = "Set-Cookie",
-                        value = "${ResourcePermissionChecker.authCookieName}=$token; Path=/; Secure=true; SameSite=Lax; HttpOnly=true; Domain=$domainName"
-                    )
-                )
-            )
-        } catch (e: KeycloakOidcException) {
-            val trackingCode = RandomCodeUtil.gen(length = 8, needTime = false)
-            Log.error("Sign in failed: get Keycloak OIDC Authorization Token failed, trackingCode: $trackingCode", e)
-            return ResponseBean.error(
-                status = Status.INTERNAL_SERVER_ERROR,
-                code = "SIGN_IN_FAILED",
-                message = "Sign in failed",
-                trackingCode = trackingCode,
-            )
-        } catch (e: Exception) {
-            val trackingCode = RandomCodeUtil.gen(length = 8, needTime = false)
-            Log.error("Sign in failed, trackingCode: $trackingCode", e)
-            return ResponseBean.error(
-                status = Status.INTERNAL_SERVER_ERROR,
-                code = "SIGN_IN_FAILED",
-                message = "Sign in failed",
-                trackingCode = trackingCode,
-            )
-        }
+        val maxAge = token.expiresIn - 180 // 提前過期避免早於或相等於 session
+        val cookie = NewCookie.Builder(ResourcePermissionChecker.authCookieName)
+            .domain(domainName)
+            .value(token.accessToken)
+            .path("/")
+            .maxAge(maxAge)
+            .httpOnly(true)
+            .secure(true)
+            .sameSite(NewCookie.SameSite.LAX)
+            .build()
+
+        return ResponseBean.ok(
+            data = AuthResourceResponse.SignIn(
+                message = "Niceeee"
+            ),
+            cookie = cookie
+        )
     }
 }

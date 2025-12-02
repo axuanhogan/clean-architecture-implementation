@@ -5,8 +5,6 @@ interface KeycloakOidcService {
     fun getTokenByPasswordGrant(body: GetTokenByPasswordGrantBody): GetTokenByPasswordGrantResponse
 
     data class GetTokenByPasswordGrantBody(
-        val clientId: String,
-        val clientSecret: String,
         val username: String,
         val password: String,
         val scope: String? = null,

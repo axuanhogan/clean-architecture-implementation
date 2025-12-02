@@ -2,6 +2,7 @@ package com.axuanhogan.common.util
 
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonProperty
+import jakarta.ws.rs.core.NewCookie
 import jakarta.ws.rs.core.Response
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -36,6 +37,7 @@ class ResponseBean private constructor(
         fun ok(
             data: Any? = null,
             headers: List<Header> = emptyList(),
+            cookie: NewCookie? = null,
         ): Response {
             val entity = SuccessResponseEntity(data = data)
             val response = Response.status(Response.Status.OK).entity(entity)
@@ -44,6 +46,10 @@ class ResponseBean private constructor(
                 headers.forEach {
                     response.header(it.name, it.value)
                 }
+            }
+
+            if (cookie != null) {
+                response.cookie(cookie)
             }
 
             return response.build()
