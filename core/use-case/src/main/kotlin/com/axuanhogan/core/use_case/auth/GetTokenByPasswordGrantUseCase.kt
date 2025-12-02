@@ -9,8 +9,6 @@ class GetTokenByPasswordGrantUseCase(
     fun execute(input: GetTokenByPasswordGrantUseCaseInput): GetTokenByPasswordGrantUseCaseOutput {
         val response =  keycloakOidcService.getTokenByPasswordGrant(
             body = KeycloakOidcService.GetTokenByPasswordGrantBody(
-                clientId = input.clientId,
-                clientSecret = input.clientSecret,
                 username = input.username,
                 password = input.password,
                 scope = input.scope,
@@ -31,8 +29,6 @@ class GetTokenByPasswordGrantUseCase(
 }
 
 data class GetTokenByPasswordGrantUseCaseInput(
-    val clientId: String,
-    val clientSecret: String,
     val username: String,
     val password: String,
     val scope: String? = null,

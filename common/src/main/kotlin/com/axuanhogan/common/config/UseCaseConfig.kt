@@ -6,14 +6,14 @@ import com.axuanhogan.core.port.out.repository.UserRepository
 import com.axuanhogan.core.port.out.service.KeycloakOidcService
 import com.axuanhogan.core.use_case.auth.GetTokenByPasswordGrantUseCase
 import com.axuanhogan.core.use_case.user.CreateUserUseCase
-import com.axuanhogan.core.use_case.user.GetUserUseCase
+import com.axuanhogan.core.use_case.user.GetUserEmailUseCase
 
 @ApplicationScoped
 class UseCaseConfig {
 
     @Produces
-    fun getUserUseCase(userRepository: UserRepository): GetUserUseCase {
-        return GetUserUseCase(
+    fun getUserUseCase(userRepository: UserRepository): GetUserEmailUseCase {
+        return GetUserEmailUseCase(
             userRepository = userRepository
         )
     }
