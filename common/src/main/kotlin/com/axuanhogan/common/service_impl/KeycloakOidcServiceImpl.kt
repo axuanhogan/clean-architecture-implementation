@@ -11,9 +11,10 @@ import org.eclipse.microprofile.rest.client.inject.RestClient
 @ApplicationScoped
 class KeycloakOidcServiceImpl(
     @param:RestClient private val client: KeycloakOidcClient,
-    private val clientId: String = KeycloakOidcClient.Client.CLEAN_ARCHITECTURE_IMPLEMENTATION.name,
     @param:ConfigProperty(name = "quarkus.rest-client.keycloak-oidc.client-secret") val clientSecret: String,
 ): KeycloakOidcService {
+
+    private val clientId: String = KeycloakOidcClient.Client.CLEAN_ARCHITECTURE_IMPLEMENTATION.name
 
     override fun getTokenByPasswordGrant(body: GetTokenByPasswordGrantBody): GetTokenByPasswordGrantResponse {
         val result = client.getTokenByPasswordGrant(
