@@ -1,4 +1,4 @@
-package com.axuanhogan.adapter.security
+package com.axuanhogan.security
 
 import io.quarkus.security.PermissionChecker
 import io.quarkus.security.identity.SecurityIdentity

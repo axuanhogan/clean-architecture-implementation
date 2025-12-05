@@ -1,32 +1,28 @@
-package com.axuanhogan.common.util
+package com.axuanhogan.handler
 
 import com.fasterxml.jackson.annotation.JsonInclude
-import com.fasterxml.jackson.annotation.JsonProperty
 import jakarta.ws.rs.core.NewCookie
 import jakarta.ws.rs.core.Response
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-class ResponseBean private constructor(
+class ResponseHandler private constructor(
 ) {
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    class SuccessResponseEntity<T>(
+    class SuccessResponse<T>(
         val data: T,
     )
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    class ErrorResponseEntity(
+    class ErrorResponse(
         val error: Error,
         var trackingCode: String? = null
     ) {
-        class Error(val code: String, val message: String?)
+        class Error(
+            val code: String,
+            val message: String?
+        )
     }
-
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    class KeycloakOidcErrorResponseEntity(
-        @param:JsonProperty("error") val error: String,
-        @param:JsonProperty("error_description") val errorDescription: String? = null
-    )
 
     data class Header(
         val name: String,
@@ -39,7 +35,7 @@ class ResponseBean private constructor(
             headers: List<Header> = emptyList(),
             cookie: NewCookie? = null,
         ): Response {
-            val entity = SuccessResponseEntity(data = data)
+            val entity = SuccessResponse(data = data)
             val response = Response.status(Response.Status.OK).entity(entity)
 
             if (headers.isNotEmpty()) {
@@ -91,8 +87,8 @@ class ResponseBean private constructor(
             message: String? = "Error",
             trackingCode: String? = null,
         ): Response {
-            val entity = ErrorResponseEntity(
-                error = ErrorResponseEntity.Error(
+            val entity = ErrorResponse(
+                error = ErrorResponse.Error(
                     code = code,
                     message = message,
                 ),

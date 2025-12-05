@@ -1,6 +1,6 @@
-package com.axuanhogan.common.service_impl
+package com.axuanhogan.common.adapter.out.service_impl
 
-import com.axuanhogan.common.client.KeycloakOidcClient
+import com.axuanhogan.common.adapter.out.client.KeycloakOidcClient
 import com.axuanhogan.core.port.out.service.KeycloakOidcService
 import com.axuanhogan.core.port.out.service.KeycloakOidcService.GetTokenByPasswordGrantBody
 import com.axuanhogan.core.port.out.service.KeycloakOidcService.GetTokenByPasswordGrantResponse

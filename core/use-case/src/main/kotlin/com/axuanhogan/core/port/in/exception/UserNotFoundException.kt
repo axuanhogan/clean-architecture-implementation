@@ -1,4 +1,4 @@
-package com.axuanhogan.core.exception
+package com.axuanhogan.core.port.`in`.exception
 
 data class UserNotFoundException(
     override val message: String,

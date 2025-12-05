@@ -1,7 +1,8 @@
-package com.axuanhogan.common.mapper.exception
+package com.axuanhogan.common.mapper
 
 import com.axuanhogan.common.exception.KeycloakOidcException
-import com.axuanhogan.common.util.ResponseBean
+import com.fasterxml.jackson.annotation.JsonInclude
+import com.fasterxml.jackson.annotation.JsonProperty
 import jakarta.ws.rs.core.MultivaluedMap
 import jakarta.ws.rs.core.Response
 import org.eclipse.microprofile.rest.client.ext.ResponseExceptionMapper
@@ -17,7 +18,7 @@ class KeycloakOidcExceptionMapper : ResponseExceptionMapper<KeycloakOidcExceptio
         return if (response.status == Response.Status.OK.statusCode) {
             null
         } else {
-            val entity = response.readEntity(ResponseBean.KeycloakOidcErrorResponseEntity::class.java)
+            val entity = response.readEntity(KeycloakOidcErrorResponseEntity::class.java)
             KeycloakOidcException(
                 status = response.statusInfo.statusCode,
                 reasonPhrase = response.statusInfo.reasonPhrase,
@@ -27,3 +28,9 @@ class KeycloakOidcExceptionMapper : ResponseExceptionMapper<KeycloakOidcExceptio
         }
     }
 }
+
+@JsonInclude(JsonInclude.Include.NON_NULL)
+class KeycloakOidcErrorResponseEntity(
+    @param:JsonProperty("error") val error: String,
+    @param:JsonProperty("error_description") val errorDescription: String? = null
+)
