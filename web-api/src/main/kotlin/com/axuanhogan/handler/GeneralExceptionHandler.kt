@@ -1,7 +1,6 @@
-package com.axuanhogan.adapter.exception
+package com.axuanhogan.handler
 
 import com.axuanhogan.common.util.RandomCodeUtil
-import com.axuanhogan.common.util.ResponseBean
 import io.quarkus.logging.Log
 import jakarta.ws.rs.core.Response
 import jakarta.ws.rs.ext.ExceptionMapper
@@ -13,7 +12,7 @@ class GeneralExceptionHandler : ExceptionMapper<Exception> {
 
         val trackingCode = RandomCodeUtil.gen(length = 8, needTime = false)
         Log.error("[$trackingCode] Catch the Exception in GeneralExceptionHandler", exception)
-        return ResponseBean.error(
+        return ResponseHandler.error(
             status = Response.Status.INTERNAL_SERVER_ERROR,
             code = "UNDEFINED_ERROR",
             trackingCode = trackingCode,

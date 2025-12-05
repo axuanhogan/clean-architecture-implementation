@@ -1,13 +1,12 @@
 package com.axuanhogan.adapter.`in`.gateway.v1
 
-import com.axuanhogan.common.util.ResponseBean
+import com.axuanhogan.handler.ResponseHandler
 import com.axuanhogan.adapter.`in`.gateway.v1.request.AuthResourceRequest
 import com.axuanhogan.adapter.`in`.gateway.v1.response.AuthResourceResponse
-import com.axuanhogan.adapter.security.ResourcePermissionChecker
-import com.axuanhogan.adapter.security.ResourcePermissionChecker.Companion.SCOPE_USER
-import com.axuanhogan.common.client.KeycloakOidcClient
-import com.axuanhogan.core.use_case.auth.GetTokenByPasswordGrantUseCase
-import com.axuanhogan.core.use_case.auth.GetTokenByPasswordGrantUseCaseInput
+import com.axuanhogan.security.ResourcePermissionChecker
+import com.axuanhogan.security.ResourcePermissionChecker.Companion.SCOPE_USER
+import com.axuanhogan.core.port.`in`.use_case.auth.SignInUseCase
+import com.axuanhogan.core.port.`in`.use_case.auth.SignInUseCaseInput
 import jakarta.ws.rs.Consumes
 import jakarta.ws.rs.POST
 import jakarta.ws.rs.Path
@@ -35,7 +34,7 @@ import org.eclipse.microprofile.openapi.annotations.tags.Tag
         description = "Unprocessable Entity",
         content = [
             Content(
-                schema = Schema(implementation = ResponseBean.ErrorResponseEntity::class),
+                schema = Schema(implementation = ResponseHandler.ErrorResponse::class),
                 mediaType = MediaType.APPLICATION_JSON,
                 example = """{
                         "error": {
@@ -52,7 +51,7 @@ import org.eclipse.microprofile.openapi.annotations.tags.Tag
         description = "Internal Server Error",
         content = [
             Content(
-                schema = Schema(implementation = ResponseBean.ErrorResponseEntity::class),
+                schema = Schema(implementation = ResponseHandler.ErrorResponse::class),
                 mediaType = MediaType.APPLICATION_JSON,
                 example = """{
                         "error": {
@@ -67,12 +66,15 @@ import org.eclipse.microprofile.openapi.annotations.tags.Tag
 )
 class AuthResource (
     @param:ConfigProperty(name = "application.domain-name") val domainName: String,
-    private val getTokenByPasswordGrantUseCase: GetTokenByPasswordGrantUseCase
+    private val signInUseCase: SignInUseCase
 ) {
 
     @POST
     @Path("/sign-in")
-    @Operation(summary = "登入")
+    @Operation(
+        summary = "Sign in",
+        description = "登入",
+    )
     @APIResponses(
         APIResponse(
             responseCode = "200",
@@ -97,18 +99,18 @@ class AuthResource (
         body: AuthResourceRequest.SignIn
     ) : Response {
 
-        val token = getTokenByPasswordGrantUseCase.execute(
-            input = GetTokenByPasswordGrantUseCaseInput(
+        val result = signInUseCase.execute(
+            input = SignInUseCaseInput(
                 username = body.email,
                 password = body.password,
                 scope = SCOPE_USER,
             )
         )
 
-        val maxAge = token.expiresIn - 180 // 提前過期避免早於或相等於 session
+        val maxAge = result.expiresIn - 180 // 提前過期避免早於或相等於 session
         val cookie = NewCookie.Builder(ResourcePermissionChecker.authCookieName)
             .domain(domainName)
-            .value(token.accessToken)
+            .value(result.accessToken)
             .path("/")
             .maxAge(maxAge)
             .httpOnly(true)
@@ -116,9 +118,9 @@ class AuthResource (
             .sameSite(NewCookie.SameSite.LAX)
             .build()
 
-        return ResponseBean.ok(
+        return ResponseHandler.ok(
             data = AuthResourceResponse.SignIn(
-                message = "Niceeee"
+                message = "So far so good."
             ),
             cookie = cookie
         )

@@ -9,7 +9,6 @@ This repository demonstrates a Clean Architecture implementation using Quarkus w
 ### Diagram
 ```mermaid
 graph LR
-		
 	subgraph External Out
 		resource[Resource]
 		data-store[(DataStore)]
@@ -20,15 +19,20 @@ graph LR
 	end
 	
 	subgraph web-api[Web API]
-        subgraph adapter[Adapter]
-            subgraph adapter-in[In]
-                adapter-in-gateway[Gateway]
+        subgraph web-api-adapter[Adapter]
+            subgraph web-api-adapter-in[In]
+                web-api-adapter-in-gateway[Gateway]
             end
-            subgraph adapter-out[Out]
-                adapter-out-service-impl[ServiceImpl]
-                adapter-out-jpa-repo-impl[JpaRepositoryImpl]
-                adapter-out-client[Client]
-                adapter-out-jpa-repo[JpaRepostory]
+        end
+    end
+	
+	subgraph common[Common]
+        subgraph common-adapter[Adapter]
+            subgraph common-adapter-out[Out]
+                common-adapter-out-service-impl[ServiceImpl]
+                common-adapter-out-repo-impl[RepositoryImpl]
+                common-adapter-out-client[Client]
+                common-adapter-out-jpa-repo[JpaRepostory]
             end
         end
     end
@@ -42,20 +46,22 @@ graph LR
                 port-out-repo[Repository]
                 port-out-service[Service]
             end
-            subgraph use-case[Use Case]
-            end
+            subgraph port-in[Port In]
+				use-case[Use Case]
+				pdo[Persistence Domain Object]
+			end
 		end
 	end
 	
-	web -- Request --> adapter-in-gateway
+	web -- Request --> web-api-adapter-in-gateway
 	
-	adapter-in -- Use --> use-case
+	web-api-adapter-in-gateway -- Use --> use-case
 	use-case -- Use --> domain-layer
-	adapter-out-client -. Inject .-> adapter-out-service-impl
-	adapter-out-jpa-repo -. Inject .-> adapter-out-jpa-repo-impl
-	adapter-out -. Implement .-> port-out
+	common-adapter-out-client -. Inject .-> common-adapter-out-service-impl
+	common-adapter-out-jpa-repo -. Inject .-> common-adapter-out-repo-impl
+	common-adapter-out -. Implement .-> port-out
 	port-out -. Inject .-> use-case
 	
-	adapter-out-jpa-repo-impl -- Save or Get --> data-store
-	adapter-out-service-impl -- Request --> resource
+	common-adapter-out-repo-impl -- Save or Get --> data-store
+	common-adapter-out-service-impl -- Request --> resource
 ```

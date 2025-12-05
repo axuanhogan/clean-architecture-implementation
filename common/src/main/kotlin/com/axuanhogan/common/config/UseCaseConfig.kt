@@ -4,16 +4,16 @@ import jakarta.enterprise.context.ApplicationScoped
 import jakarta.enterprise.inject.Produces
 import com.axuanhogan.core.port.out.repository.UserRepository
 import com.axuanhogan.core.port.out.service.KeycloakOidcService
-import com.axuanhogan.core.use_case.auth.GetTokenByPasswordGrantUseCase
-import com.axuanhogan.core.use_case.user.CreateUserUseCase
-import com.axuanhogan.core.use_case.user.GetUserEmailUseCase
+import com.axuanhogan.core.port.`in`.use_case.auth.SignInUseCase
+import com.axuanhogan.core.port.`in`.use_case.user.CreateUserUseCase
+import com.axuanhogan.core.port.`in`.use_case.user.GetUserInfoUseCase
 
 @ApplicationScoped
 class UseCaseConfig {
 
     @Produces
-    fun getUserUseCase(userRepository: UserRepository): GetUserEmailUseCase {
-        return GetUserEmailUseCase(
+    fun getUserInfoUseCase(userRepository: UserRepository): GetUserInfoUseCase {
+        return GetUserInfoUseCase(
             userRepository = userRepository
         )
     }
@@ -26,8 +26,8 @@ class UseCaseConfig {
     }
 
     @Produces
-    fun getTokenByPasswordGrantUseCase(keycloakOidcService: KeycloakOidcService): GetTokenByPasswordGrantUseCase {
-        return GetTokenByPasswordGrantUseCase(
+    fun signInUseCase(keycloakOidcService: KeycloakOidcService): SignInUseCase {
+        return SignInUseCase(
             keycloakOidcService = keycloakOidcService
         )
     }

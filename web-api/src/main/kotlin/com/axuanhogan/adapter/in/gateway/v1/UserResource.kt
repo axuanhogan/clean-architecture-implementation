@@ -11,14 +11,14 @@ import org.eclipse.microprofile.openapi.annotations.media.Schema
 import org.eclipse.microprofile.openapi.annotations.media.SchemaProperty
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponses
-import com.axuanhogan.common.util.ResponseBean
+import com.axuanhogan.handler.ResponseHandler
 import com.axuanhogan.adapter.`in`.gateway.v1.request.UserResourceRequest
 import com.axuanhogan.adapter.`in`.gateway.v1.response.UserResourceResponse
-import com.axuanhogan.adapter.security.ResourcePermissionChecker
-import com.axuanhogan.core.use_case.user.CreateUserUseCase
-import com.axuanhogan.core.use_case.user.CreateUserUseCaseInput
-import com.axuanhogan.core.use_case.user.GetUserEmailUseCase
-import com.axuanhogan.core.use_case.user.GetUserEmailUseCaseInput
+import com.axuanhogan.security.ResourcePermissionChecker
+import com.axuanhogan.core.port.`in`.use_case.user.CreateUserUseCase
+import com.axuanhogan.core.port.`in`.use_case.user.CreateUserUseCaseInput
+import com.axuanhogan.core.port.`in`.use_case.user.GetUserInfoUseCaseInput
+import com.axuanhogan.core.port.`in`.use_case.user.GetUserInfoUseCase
 import io.quarkus.security.PermissionsAllowed
 import java.util.*
 
@@ -33,7 +33,7 @@ import java.util.*
         description = "Unprocessable Entity",
         content = [
             Content(
-                schema = Schema(implementation = ResponseBean.ErrorResponseEntity::class),
+                schema = Schema(implementation = ResponseHandler.ErrorResponse::class),
                 mediaType = MediaType.APPLICATION_JSON,
                 example = """{
                         "error": {
@@ -49,7 +49,7 @@ import java.util.*
         description = "Internal Server Error",
         content = [
             Content(
-                schema = Schema(implementation = ResponseBean.ErrorResponseEntity::class),
+                schema = Schema(implementation = ResponseHandler.ErrorResponse::class),
                 mediaType = MediaType.APPLICATION_JSON,
                 example = """{
                         "error": {
@@ -62,13 +62,16 @@ import java.util.*
     )
 )
 class UserResource(
-    private val getUserEmailUseCase: GetUserEmailUseCase,
+    private val getUserInfoUseCase: GetUserInfoUseCase,
     private val createUserUseCase: CreateUserUseCase,
 ) {
 
     @GET
     @Path("/{userId}")
-    @Operation(summary = "Get User")
+    @Operation(
+        summary = "Get user info",
+        description = "取得 user info",
+    )
     @APIResponses(
         APIResponse(
             responseCode = "200",
@@ -89,22 +92,25 @@ class UserResource(
     fun getUser(
         @PathParam("userId") userId: String,
     ): Response {
-        val output = getUserEmailUseCase.execute(
-            input = GetUserEmailUseCaseInput(
+        val result = getUserInfoUseCase.execute(
+            input = GetUserInfoUseCaseInput(
                 userId = UUID.fromString(userId),
             )
         )
 
-        return ResponseBean.ok(
+        return ResponseHandler.ok(
             data = UserResourceResponse.GetUser(
-                email = output.email,
+                email = result.email,
             )
         )
     }
 
     @POST
     @Path("/")
-    @Operation(summary = "Create User")
+    @Operation(
+        summary = "Create user",
+        description = "建立 user",
+    )
     @APIResponses(
         APIResponse(
             responseCode = "200",
@@ -133,7 +139,7 @@ class UserResource(
             )
         )
 
-        return ResponseBean.ok(
+        return ResponseHandler.ok(
             data = UserResourceResponse.CreateUser(
                 message = "Niceeee"
             )

@@ -1,6 +1,6 @@
-package com.axuanhogan.common.client
+package com.axuanhogan.common.adapter.out.client
 
-import com.axuanhogan.common.mapper.exception.KeycloakOidcExceptionMapper
+import com.axuanhogan.common.mapper.KeycloakOidcExceptionMapper
 import com.fasterxml.jackson.annotation.JsonProperty
 import jakarta.ws.rs.*
 import jakarta.ws.rs.core.MediaType

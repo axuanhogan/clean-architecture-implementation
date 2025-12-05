@@ -1,4 +1,4 @@
-package com.axuanhogan.core.use_case.user
+package com.axuanhogan.core.port.`in`.use_case.user
 
 import com.axuanhogan.core.port.`in`.pdo.UserPDO
 import com.axuanhogan.core.port.out.repository.UserRepository
@@ -16,7 +16,7 @@ class CreateUserUseCase(
             name = input.name,
         )
 
-        return userRepository.saveData(pdo = pdo)
+        return userRepository.save(pdo = pdo)
     }
 }
 

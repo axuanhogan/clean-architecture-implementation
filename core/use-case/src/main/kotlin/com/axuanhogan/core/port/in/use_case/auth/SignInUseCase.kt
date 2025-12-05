@@ -1,12 +1,13 @@
-package com.axuanhogan.core.use_case.auth
+package com.axuanhogan.core.port.`in`.use_case.auth
 
 import com.axuanhogan.core.port.out.service.KeycloakOidcService
 
-class GetTokenByPasswordGrantUseCase(
+class SignInUseCase(
     private val keycloakOidcService: KeycloakOidcService
 ) {
 
-    fun execute(input: GetTokenByPasswordGrantUseCaseInput): GetTokenByPasswordGrantUseCaseOutput {
+    fun execute(input: SignInUseCaseInput): SignInUseCaseOutput {
+
         val response =  keycloakOidcService.getTokenByPasswordGrant(
             body = KeycloakOidcService.GetTokenByPasswordGrantBody(
                 username = input.username,
@@ -15,7 +16,7 @@ class GetTokenByPasswordGrantUseCase(
             )
         )
 
-        return GetTokenByPasswordGrantUseCaseOutput(
+        return SignInUseCaseOutput(
             accessToken = response.accessToken,
             expiresIn = response.expiresIn,
             refreshToken = response.refreshToken,
@@ -28,13 +29,13 @@ class GetTokenByPasswordGrantUseCase(
     }
 }
 
-data class GetTokenByPasswordGrantUseCaseInput(
+data class SignInUseCaseInput(
     val username: String,
     val password: String,
     val scope: String? = null,
 )
 
-data class GetTokenByPasswordGrantUseCaseOutput(
+data class SignInUseCaseOutput(
     val accessToken: String,
     val expiresIn: Int,
     val refreshToken: String,
